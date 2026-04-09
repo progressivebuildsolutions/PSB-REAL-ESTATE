@@ -20,6 +20,7 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  console.log('AuthProvider initializing...');
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -41,29 +42,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    console.log('AuthProvider useEffect running...');
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
-      if (user) {
-        // Check if user document exists, if not create it
-        const userRef = doc(db, 'users', user.uid);
-        const userSnap = await getDoc(userRef);
-        
-        if (!userSnap.exists()) {
-          await setDoc(userRef, {
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
-            role: user.email === 'progressivebuildsolutions@gmail.com' ? 'admin' : 'user',
-            createdAt: serverTimestamp()
-          });
-          setIsAdmin(user.email === 'progressivebuildsolutions@gmail.com');
+      console.log('onAuthStateChanged fired:', user?.email);
+      try {
+        setUser(user);
+        if (user) {
+          // Check if user document exists, if not create it
+          const userRef = doc(db, 'users', user.uid);
+          const userSnap = await getDoc(userRef);
+          
+          if (!userSnap.exists()) {
+            await setDoc(userRef, {
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName,
+              role: user.email === 'progressivebuildsolutions@gmail.com' ? 'admin' : 'user',
+              createdAt: serverTimestamp()
+            });
+            setIsAdmin(user.email === 'progressivebuildsolutions@gmail.com');
+          } else {
+            setIsAdmin(userSnap.data()?.role === 'admin');
+          }
         } else {
-          setIsAdmin(userSnap.data()?.role === 'admin');
+          setIsAdmin(false);
         }
-      } else {
-        setIsAdmin(false);
+      } catch (error) {
+        console.error('Auth State Change Error:', error);
+        // We don't want to crash the whole app if auth doc fetch fails
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return unsubscribe;
