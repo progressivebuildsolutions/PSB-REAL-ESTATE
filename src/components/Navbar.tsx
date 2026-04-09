@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Building2, Menu, X, Phone, Search, LogIn, LogOut, User } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Building2, Menu, X, Phone, Search, LogIn, LogOut, User, ShieldCheck } from 'lucide-react';
 import { Button } from './ui/button';
 import { useAuth } from '../lib/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -9,7 +10,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, signInWithGoogle, logout } = useAuth();
+  const { user, signInWithGoogle, logout, isAdmin } = useAuth();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -27,18 +30,18 @@ export function Navbar() {
   return (
     <nav 
       className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled ? 'bg-white/90 py-3 shadow-sm backdrop-blur-md' : 'bg-gradient-to-b from-black/60 to-transparent py-6'
+        isScrolled || !isHomePage ? 'bg-white/90 py-3 shadow-sm backdrop-blur-md' : 'bg-gradient-to-b from-black/60 to-transparent py-6'
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6">
-        <a href="#" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2">
           <div className="flex h-10 w-12 items-center justify-center rounded-lg bg-stone-900 text-white font-bold text-lg">
             PBS
           </div>
-          <span className={`text-xl font-bold tracking-tight hidden sm:inline ${isScrolled ? 'text-stone-900' : 'text-white'}`}>
+          <span className={`text-xl font-bold tracking-tight hidden sm:inline ${isScrolled || !isHomePage ? 'text-stone-900' : 'text-white'}`}>
             Real Estate
           </span>
-        </a>
+        </Link>
 
         {/* Desktop Nav */}
         <div className="hidden items-center gap-8 md:flex">
@@ -46,11 +49,21 @@ export function Navbar() {
             <a 
               key={link.name} 
               href={link.href}
-              className={`text-sm font-medium transition-colors ${isScrolled ? 'text-stone-600 hover:text-stone-900' : 'text-stone-200 hover:text-white'}`}
+              className={`text-sm font-medium transition-colors ${isScrolled || !isHomePage ? 'text-stone-600 hover:text-stone-900' : 'text-stone-200 hover:text-white'}`}
             >
               {link.name}
             </a>
           ))}
+
+          {isAdmin && (
+            <Link 
+              to="/admin"
+              className={`text-sm font-medium flex items-center gap-1 transition-colors ${isScrolled || !isHomePage ? 'text-stone-900' : 'text-stone-100 hover:text-white'}`}
+            >
+              <ShieldCheck className="h-4 w-4" />
+              Admin
+            </Link>
+          )}
           
           {user ? (
             <DropdownMenu>
@@ -93,7 +106,7 @@ export function Navbar() {
 
         {/* Mobile Toggle */}
         <button 
-          className={`md:hidden p-2 rounded-lg hover:bg-stone-100 ${isScrolled ? 'text-stone-900' : 'text-white'}`}
+          className={`md:hidden p-2 rounded-lg hover:bg-stone-100 ${isScrolled || !isHomePage ? 'text-stone-900' : 'text-white'}`}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X /> : <Menu />}

@@ -1,6 +1,47 @@
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: users
+// Document ID: {userId}
+// Fields:
+//   - uid: string (required)
+//   - email: string (required)
+//   - displayName: string
+//   - role: string (admin/user)
+//   - createdAt: timestamp
+//
+// Collection: listings
+// Document ID: {listingId}
+// Fields:
+//   - title: string (required)
+//   - description: string
+//   - type: string (buy/sell/rent/lease)
+//   - propertyType: string
+//   - price: string
+//   - location: string
+//   - ownerId: string (required)
+//   - status: string (pending/approved/sold/rejected)
+//   - createdAt: timestamp
+//
+// Collection: listings_private
+// Document ID: {listingId} (matches listingId in listings)
+// Fields:
+//   - listingId: string (required)
+//   - contactName: string (required)
+//   - contactPhone: string (required)
+//   - contactEmail: string
+//   - ownerId: string (required)
+//
+// ===============================================================
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
     
     function isAuthenticated() {
       return request.auth != null;
@@ -12,25 +53,80 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() && 
-        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
          (request.auth.token.email == "progressivebuildsolutions@gmail.com" && request.auth.token.email_verified == true));
     }
 
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'role']) &&
+             data.uid is string &&
+             data.email is string &&
+             data.role in ['admin', 'user'];
+    }
+
+    function isValidListing(data) {
+      return data.keys().hasAll(['title', 'type', 'ownerId', 'status']) &&
+             data.title is string && data.title.size() < 200 &&
+             data.type in ['buy', 'sell', 'rent', 'lease'] &&
+             data.ownerId is string &&
+             data.status in ['pending', 'approved', 'sold', 'rejected'];
+    }
+
+    function isValidPrivateDetails(data) {
+      return data.keys().hasAll(['listingId', 'contactName', 'contactPhone', 'ownerId']) &&
+             data.listingId is string &&
+             data.contactName is string && data.contactName.size() < 100 &&
+             data.contactPhone is string && data.contactPhone.size() < 20 &&
+             data.ownerId is string;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    // Users Collection
     match /users/{userId} {
       allow read: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && isValidUser(request.resource.data) && 
+                    ((isOwner(userId) && request.resource.data.role == 'user') || isAdmin());
+      allow update: if isAuthenticated() && isValidUser(request.resource.data) && 
+                    ((isOwner(userId) && request.resource.data.role == resource.data.role) || isAdmin());
     }
 
-    match /properties/{propertyId} {
-      allow read: if true;
-      allow write: if isAdmin();
+    // Public Listings
+    match /listings/{listingId} {
+      // Public can read approved listings
+      allow read: if resource.data.status == 'approved' || isOwner(resource.data.ownerId) || isAdmin();
+      
+      allow create: if isAuthenticated() && isValidListing(request.resource.data) && 
+                    request.resource.data.ownerId == request.auth.uid &&
+                    request.resource.data.status == 'pending'; // New listings start as pending
+      
+      allow update: if isAuthenticated() && isValidListing(request.resource.data) && 
+                    (isOwner(resource.data.ownerId) || isAdmin()) &&
+                    // Owners can't approve their own listings if they aren't admin
+                    (isAdmin() || request.resource.data.status == resource.data.status || 
+                     (resource.data.status == 'approved' && request.resource.data.status == 'sold'));
+      
+      allow delete: if isAdmin();
     }
 
-    match /requirements/{requirementId} {
-      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
-      allow create: if true;
-      allow update, delete: if isAdmin();
+    // Private Details (Admin & Owner ONLY)
+    match /listings_private/{listingId} {
+      allow read: if isOwner(resource.data.ownerId) || isAdmin();
+      
+      allow create: if isAuthenticated() && isValidPrivateDetails(request.resource.data) && 
+                    request.resource.data.ownerId == request.auth.uid;
+      
+      allow update: if isAuthenticated() && isValidPrivateDetails(request.resource.data) && 
+                    (isOwner(resource.data.ownerId) || isAdmin());
+      
+      allow delete: if isAdmin();
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

@@ -6,33 +6,54 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, collection } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { useAuth } from '../lib/AuthContext';
 import { toast } from 'sonner';
 
 export function PostRequirement() {
   const [loading, setLoading] = useState(false);
+  const { user, signInWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!user) {
+      toast.error('Please login to post your requirement');
+      signInWithGoogle();
+      return;
+    }
+
     setLoading(true);
     const formData = new FormData(e.currentTarget);
+    const listingId = doc(collection(db, 'listings')).id;
     
     try {
-      await addDoc(collection(db, 'requirements'), {
-        name: formData.get('name'),
-        email: formData.get('email'),
-        phone: formData.get('phone'),
+      // 1. Create Public Listing (No contact info)
+      await setDoc(doc(db, 'listings', listingId), {
+        title: `${formData.get('propertyType')} in ${formData.get('location')}`,
+        description: formData.get('message') || 'No additional details provided.',
+        type: 'buy', // Defaulting to buy for "requirement"
         propertyType: formData.get('propertyType'),
-        budget: formData.get('budget'),
+        price: formData.get('budget'),
         location: formData.get('location'),
-        message: formData.get('message'),
-        status: 'new',
+        ownerId: user.uid,
+        status: 'pending',
         createdAt: serverTimestamp(),
       });
-      toast.success('Requirement posted successfully! Our agents will contact you.');
+
+      // 2. Create Private Details (Contact info)
+      await setDoc(doc(db, 'listings_private', listingId), {
+        listingId: listingId,
+        contactName: formData.get('name'),
+        contactPhone: formData.get('phone'),
+        contactEmail: formData.get('email') || user.email,
+        ownerId: user.uid,
+      });
+
+      toast.success('Requirement posted successfully! Admin will review and approve it soon.');
       (e.target as HTMLFormElement).reset();
     } catch (error) {
+      console.error('Error posting requirement:', error);
       toast.error('Failed to post requirement. Please try again.');
     } finally {
       setLoading(false);

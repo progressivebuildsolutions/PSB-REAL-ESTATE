@@ -1,66 +1,61 @@
 {
   "entities": {
-    "User": {
+    "user": {
       "title": "User",
-      "description": "User profile information",
+      "description": "A user of the platform",
       "type": "object",
       "properties": {
-        "uid": { "type": "string" },
-        "email": { "type": "string", "format": "email" },
-        "displayName": { "type": "string" },
-        "role": { "type": "string", "enum": ["admin", "user"] },
-        "createdAt": { "type": "string", "format": "date-time" }
+        "uid": { "type": "string", "description": "Unique user ID" },
+        "email": { "type": "string", "format": "email", "description": "User email" },
+        "displayName": { "type": "string", "description": "User display name" },
+        "role": { "type": "string", "enum": ["admin", "user"], "description": "User role" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation time" }
       },
       "required": ["uid", "email", "role"]
     },
-    "Property": {
-      "title": "Property",
-      "description": "Real estate property listing",
+    "listing": {
+      "title": "Property Listing",
+      "description": "A public property listing or requirement",
       "type": "object",
       "properties": {
-        "title": { "type": "string" },
-        "type": { "type": "string", "enum": ["plot", "residential", "commercial", "agricultural"] },
-        "price": { "type": "number" },
-        "location": { "type": "string" },
-        "area": { "type": "string" },
-        "description": { "type": "string" },
-        "images": { "type": "array", "items": { "type": "string" } },
-        "status": { "type": "string", "enum": ["available", "sold"] },
-        "createdAt": { "type": "string", "format": "date-time" }
+        "title": { "type": "string", "description": "Listing title" },
+        "description": { "type": "string", "description": "Property description" },
+        "type": { "type": "string", "enum": ["buy", "sell", "rent", "lease"], "description": "Type of listing" },
+        "propertyType": { "type": "string", "enum": ["plot", "residential", "commercial", "agricultural"], "description": "Category of property" },
+        "price": { "type": "string", "description": "Price or budget" },
+        "location": { "type": "string", "description": "Property location" },
+        "ownerId": { "type": "string", "description": "UID of the poster" },
+        "status": { "type": "string", "enum": ["pending", "approved", "sold", "rejected"], "description": "Listing status" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation time" }
       },
-      "required": ["title", "type", "price", "location", "status"]
+      "required": ["title", "type", "ownerId", "status"]
     },
-    "Requirement": {
-      "title": "Requirement",
-      "description": "User property requirement",
+    "listing_private": {
+      "title": "Private Listing Details",
+      "description": "Sensitive contact information for a listing",
       "type": "object",
       "properties": {
-        "userId": { "type": "string" },
-        "name": { "type": "string" },
-        "phone": { "type": "string" },
-        "email": { "type": "string" },
-        "propertyType": { "type": "string", "enum": ["plot", "residential", "commercial", "agricultural"] },
-        "budget": { "type": "string" },
-        "location": { "type": "string" },
-        "message": { "type": "string" },
-        "status": { "type": "string", "enum": ["new", "contacted", "closed"] },
-        "createdAt": { "type": "string", "format": "date-time" }
+        "listingId": { "type": "string", "description": "ID of the associated public listing" },
+        "contactName": { "type": "string", "description": "Full name of the contact person" },
+        "contactPhone": { "type": "string", "description": "Phone number" },
+        "contactEmail": { "type": "string", "format": "email", "description": "Email address" },
+        "ownerId": { "type": "string", "description": "UID of the poster" }
       },
-      "required": ["name", "phone", "propertyType", "location", "status"]
+      "required": ["listingId", "contactName", "contactPhone", "ownerId"]
     }
   },
   "firestore": {
     "/users/{userId}": {
-      "schema": "User",
+      "schema": "user",
       "description": "User profiles"
     },
-    "/properties/{propertyId}": {
-      "schema": "Property",
-      "description": "Property listings"
+    "/listings/{listingId}": {
+      "schema": "listing",
+      "description": "Public property listings"
     },
-    "/requirements/{requirementId}": {
-      "schema": "Requirement",
-      "description": "User requirements"
+    "/listings_private/{listingId}": {
+      "schema": "listing_private",
+      "description": "Private contact details for listings"
     }
   }
 }
