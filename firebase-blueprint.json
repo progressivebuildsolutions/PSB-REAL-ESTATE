@@ -1,0 +1,66 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Property": {
+      "title": "Property",
+      "description": "Real estate property listing",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "type": { "type": "string", "enum": ["plot", "residential", "commercial", "agricultural"] },
+        "price": { "type": "number" },
+        "location": { "type": "string" },
+        "area": { "type": "string" },
+        "description": { "type": "string" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["available", "sold"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "type", "price", "location", "status"]
+    },
+    "Requirement": {
+      "title": "Requirement",
+      "description": "User property requirement",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "propertyType": { "type": "string", "enum": ["plot", "residential", "commercial", "agricultural"] },
+        "budget": { "type": "string" },
+        "location": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string", "enum": ["new", "contacted", "closed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "phone", "propertyType", "location", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/properties/{propertyId}": {
+      "schema": "Property",
+      "description": "Property listings"
+    },
+    "/requirements/{requirementId}": {
+      "schema": "Requirement",
+      "description": "User requirements"
+    }
+  }
+}
