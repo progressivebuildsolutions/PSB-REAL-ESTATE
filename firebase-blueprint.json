@@ -24,6 +24,7 @@
         "propertyType": { "type": "string", "enum": ["plot", "residential", "commercial", "agricultural"], "description": "Category of property" },
         "price": { "type": "string", "description": "Price or budget" },
         "location": { "type": "string", "description": "Property location" },
+        "imageUrl": { "type": "string", "description": "URL of the property image" },
         "ownerId": { "type": "string", "description": "UID of the poster" },
         "status": { "type": "string", "enum": ["pending", "approved", "sold", "rejected"], "description": "Listing status" },
         "createdAt": { "type": "string", "format": "date-time", "description": "Creation time" }

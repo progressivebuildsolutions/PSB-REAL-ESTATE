@@ -16,6 +16,7 @@ interface Listing {
   propertyType: string;
   price: string;
   location: string;
+  imageUrl?: string;
   status: string;
   createdAt: any;
 }
@@ -86,7 +87,7 @@ export function ListingGrid() {
                     <CardHeader className="p-0">
                       <div className="relative aspect-[16/10] overflow-hidden bg-stone-200">
                         <img 
-                          src={`https://picsum.photos/seed/${listing.id}/800/500`}
+                          src={listing.imageUrl || `https://picsum.photos/seed/${listing.id}/800/500`}
                           alt={listing.title}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                           referrerPolicy="no-referrer"

@@ -18,6 +18,7 @@ interface Listing {
   propertyType: string;
   price: string;
   location: string;
+  imageUrl?: string;
   status: 'pending' | 'approved' | 'sold' | 'rejected';
   ownerId: string;
   createdAt: any;
@@ -237,7 +238,7 @@ function ListingCard({ listing, onApprove, onReject, onDelete, onViewDetails, is
         <div className="flex flex-col sm:flex-row gap-6">
           <div className="w-full sm:w-48 h-32 rounded-xl overflow-hidden bg-stone-100 shrink-0">
             <img 
-              src={`https://picsum.photos/seed/${listing.id}/400/300`} 
+              src={listing.imageUrl || `https://picsum.photos/seed/${listing.id}/400/300`} 
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
             />
