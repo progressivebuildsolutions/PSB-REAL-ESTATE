@@ -34,13 +34,18 @@ export function Navbar() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-10 w-12 items-center justify-center rounded-lg bg-stone-900 text-white font-bold text-lg">
+        <Link to="/" className="flex items-center gap-2 group">
+          <div className="flex h-10 w-12 items-center justify-center rounded-lg bg-stone-900 text-white font-bold text-lg transition-transform group-hover:scale-105">
             PBS
           </div>
-          <span className={`text-xl font-bold tracking-tight hidden sm:inline ${isScrolled || !isHomePage ? 'text-stone-900' : 'text-white'}`}>
-            Real Estate
-          </span>
+          <div className="flex flex-col leading-none">
+            <span className={`text-lg font-bold tracking-tight ${isScrolled || !isHomePage ? 'text-stone-900' : 'text-white'}`}>
+              Real Estate
+            </span>
+            <span className={`text-[10px] uppercase tracking-widest font-medium ${isScrolled || !isHomePage ? 'text-stone-500' : 'text-stone-300'}`}>
+              Solutions
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Nav */}
@@ -135,17 +140,17 @@ export function Navbar() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="border-t bg-white md:hidden overflow-hidden"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute top-full left-0 w-full bg-white shadow-xl md:hidden overflow-hidden border-t border-stone-100"
           >
-            <div className="flex flex-col gap-4 p-6">
+            <div className="flex flex-col gap-1 p-4">
               {isAdmin && (
                 <Link 
                   to="/admin"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-lg font-medium text-stone-900 flex items-center gap-2"
+                  className="flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-stone-900 hover:bg-stone-50 transition-colors"
                 >
                   <ShieldCheck className="h-5 w-5 text-stone-900" />
                   Admin Dashboard
@@ -156,45 +161,54 @@ export function Navbar() {
                   key={link.name} 
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-lg font-medium text-stone-900"
+                  className="flex items-center px-4 py-3 text-base font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-50 rounded-xl transition-colors"
                 >
                   {link.name}
                 </a>
               ))}
               
+              <div className="my-2 border-t border-stone-100" />
+
               {user ? (
-                <div className="flex items-center justify-between border-t pt-4">
+                <div className="flex items-center justify-between px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
+                    <Avatar className="h-10 w-10 border border-stone-200">
                       <AvatarImage src={user.photoURL || ''} />
-                      <AvatarFallback>{user.displayName?.charAt(0)}</AvatarFallback>
+                      <AvatarFallback className="bg-stone-900 text-white">{user.displayName?.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <span className="font-medium">{user.displayName}</span>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-semibold text-stone-900">{user.displayName}</span>
+                      <span className="text-[10px] text-stone-500 truncate max-w-[150px]">{user.email}</span>
+                    </div>
                   </div>
-                  <Button variant="ghost" onClick={logout} className="text-red-600">
+                  <Button variant="ghost" size="icon" onClick={logout} className="text-stone-400 hover:text-red-600 hover:bg-red-50 rounded-full">
                     <LogOut className="h-5 w-5" />
                   </Button>
                 </div>
               ) : (
-                <Button onClick={signInWithGoogle} className="w-full rounded-xl gap-2 py-6">
-                  <LogIn className="h-5 w-5" />
-                  Login with Google
-                </Button>
+                <div className="p-2">
+                  <Button onClick={signInWithGoogle} variant="outline" className="w-full rounded-xl gap-2 py-6 border-stone-200 hover:bg-stone-50">
+                    <LogIn className="h-5 w-5" />
+                    Login with Google
+                  </Button>
+                </div>
               )}
 
-              <Button 
-                className="w-full rounded-xl bg-stone-900 py-6"
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  if (isHomePage) {
-                    document.getElementById('post-requirement')?.scrollIntoView({ behavior: 'smooth' });
-                  } else {
-                    window.location.href = '/#post-requirement';
-                  }
-                }}
-              >
-                Post Property
-              </Button>
+              <div className="p-2">
+                <Button 
+                  className="w-full rounded-xl bg-stone-900 py-6 text-white shadow-lg shadow-stone-900/20"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    if (isHomePage) {
+                      document.getElementById('post-requirement')?.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      window.location.href = '/#post-requirement';
+                    }
+                  }}
+                >
+                  Post Property
+                </Button>
+              </div>
             </div>
           </motion.div>
         )}

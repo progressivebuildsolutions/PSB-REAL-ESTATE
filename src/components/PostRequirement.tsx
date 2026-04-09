@@ -101,31 +101,31 @@ export function PostRequirement() {
   };
 
   return (
-    <section id="post-requirement" className="bg-stone-50 py-24">
+    <section id="post-requirement" className="bg-stone-50 py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="grid gap-16 lg:grid-cols-2">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-stone-900 px-4 py-1.5 text-sm font-medium text-white">
-              <ClipboardList className="h-4 w-4" />
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+          <div className="flex flex-col justify-center">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full bg-stone-900 px-4 py-1.5 text-xs font-medium text-white sm:text-sm">
+              <ClipboardList className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Post Your Requirement
             </div>
-            <h2 className="mt-6 text-4xl font-bold tracking-tight text-stone-900 sm:text-5xl">
-              Can't find what you're <br />
-              <span className="text-stone-500">looking for?</span>
+            <h2 className="mt-6 text-3xl font-bold tracking-tight text-stone-900 sm:text-5xl lg:text-6xl">
+              Can't find what you're <br className="hidden sm:block" />
+              <span className="text-stone-500 italic">looking for?</span>
             </h2>
-            <p className="mt-6 text-lg text-stone-600">
+            <p className="mt-6 text-base text-stone-600 sm:text-lg">
               Tell us your specific requirements, and our team will find the best matching properties for you. Just like MagicBricks, we bring the best deals to your doorstep.
             </p>
             
-            <ul className="mt-10 space-y-4">
+            <ul className="mt-8 space-y-3 sm:mt-10 sm:space-y-4">
               {[
                 'Personalized property matching',
                 'Verified listings only',
                 'Expert negotiation support',
                 'Zero hassle search experience',
               ].map((item) => (
-                <li key={item} className="flex items-center gap-3 text-stone-700">
-                  <CheckCircle2 className="h-5 w-5 text-stone-900" />
+                <li key={item} className="flex items-center gap-3 text-sm text-stone-700 sm:text-base">
+                  <CheckCircle2 className="h-5 w-5 shrink-0 text-stone-900" />
                   {item}
                 </li>
               ))}
@@ -136,25 +136,25 @@ export function PostRequirement() {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="rounded-3xl border border-stone-200 bg-white p-8 shadow-2xl"
+            className="rounded-2xl border border-stone-200 bg-white p-6 shadow-xl sm:rounded-3xl sm:p-8 sm:shadow-2xl"
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="req-name">Full Name</Label>
-                  <Input id="req-name" name="name" placeholder="Enter your name" required />
+                  <Label htmlFor="req-name" className="text-sm font-medium">Full Name</Label>
+                  <Input id="req-name" name="name" placeholder="Enter your name" required className="h-11 sm:h-12" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="req-phone">Phone Number</Label>
-                  <Input id="req-phone" name="phone" placeholder="+91 98765 43210" required />
+                  <Label htmlFor="req-phone" className="text-sm font-medium">Phone Number</Label>
+                  <Input id="req-phone" name="phone" placeholder="+91 98765 43210" required className="h-11 sm:h-12" />
                 </div>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="req-listing-type">Listing Type</Label>
+                  <Label htmlFor="req-listing-type" className="text-sm font-medium">Listing Type</Label>
                   <Select name="listingType" required value={listingType} onValueChange={setListingType}>
-                    <SelectTrigger className="rounded-xl">
+                    <SelectTrigger className="h-11 rounded-xl sm:h-12">
                       <SelectValue placeholder="Select Type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -166,9 +166,9 @@ export function PostRequirement() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="req-property-type">Property Type</Label>
+                  <Label htmlFor="req-property-type" className="text-sm font-medium">Property Type</Label>
                   <Select name="propertyType" required>
-                    <SelectTrigger className="rounded-xl">
+                    <SelectTrigger className="h-11 rounded-xl sm:h-12">
                       <SelectValue placeholder="Select Category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -183,19 +183,19 @@ export function PostRequirement() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="req-budget">Budget / Price Range</Label>
-                  <Input id="req-budget" name="budget" placeholder="e.g. 50L - 1Cr" required />
+                  <Label htmlFor="req-budget" className="text-sm font-medium">Budget / Price Range</Label>
+                  <Input id="req-budget" name="budget" placeholder="e.g. 50L - 1Cr" required className="h-11 sm:h-12" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="req-location">
+                  <Label htmlFor="req-location" className="text-sm font-medium">
                     {listingType === 'sell' ? 'Location' : 'Preferred Location'}
                   </Label>
-                  <Input id="req-location" name="location" placeholder="e.g. Sector 41, Chandigarh" required />
+                  <Input id="req-location" name="location" placeholder="e.g. Sector 41, Chandigarh" required className="h-11 sm:h-12" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="req-image">Property Image (Max 5MB)</Label>
+                <Label htmlFor="req-image" className="text-sm font-medium">Property Image (Max 5MB)</Label>
                 <div className="flex items-center gap-4">
                   <div 
                     onClick={() => document.getElementById('req-image')?.click()}
@@ -221,11 +221,11 @@ export function PostRequirement() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="req-message">Additional Details</Label>
+                <Label htmlFor="req-message" className="text-sm font-medium">Additional Details</Label>
                 <Textarea id="req-message" name="message" placeholder="Any specific requirements?" className="min-h-[100px] rounded-xl" />
               </div>
 
-              <Button type="submit" disabled={loading} className="w-full bg-stone-900 py-6 text-lg hover:bg-stone-800 rounded-xl">
+              <Button type="submit" disabled={loading} className="w-full bg-stone-900 py-6 text-lg hover:bg-stone-800 rounded-xl sm:py-7">
                 {loading ? 'Posting...' : 'Post Requirement'} <Send className="ml-2 h-5 w-5" />
               </Button>
             </form>

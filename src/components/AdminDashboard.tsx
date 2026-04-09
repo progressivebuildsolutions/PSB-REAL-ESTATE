@@ -103,34 +103,34 @@ export function AdminDashboard() {
   const approvedListings = listings.filter(l => l.status === 'approved');
 
   return (
-    <div className="min-h-screen bg-stone-50 pt-32 pb-20">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-12 flex items-center justify-between">
+    <div className="min-h-screen bg-stone-50 pt-24 pb-20 sm:pt-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="mb-8 flex flex-col gap-4 sm:mb-12 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-4xl font-serif font-light">Admin <span className="italic">Dashboard</span></h1>
-            <p className="text-stone-500 mt-2 font-light">Manage property listings and view client contacts.</p>
+            <h1 className="text-3xl font-serif font-light sm:text-4xl">Admin <span className="italic">Dashboard</span></h1>
+            <p className="text-stone-500 mt-1 text-sm font-light sm:mt-2 sm:text-base">Manage property listings and view client contacts.</p>
           </div>
-          <Badge className="bg-stone-900 text-white px-4 py-1 rounded-full uppercase tracking-widest text-[10px]">
+          <Badge className="w-fit bg-stone-900 text-white px-4 py-1 rounded-full uppercase tracking-widest text-[10px]">
             Administrator
           </Badge>
         </div>
 
-        <Tabs defaultValue="pending" className="space-y-8">
-          <TabsList className="bg-white p-1 rounded-xl border border-stone-200">
-            <TabsTrigger value="pending" className="rounded-lg px-8 data-[state=active]:bg-stone-900 data-[state=active]:text-white">
+        <Tabs defaultValue="pending" className="space-y-6 sm:space-y-8">
+          <TabsList className="flex w-full overflow-x-auto bg-white p-1 rounded-xl border border-stone-200 sm:inline-flex sm:w-auto">
+            <TabsTrigger value="pending" className="flex-1 rounded-lg px-4 py-2 text-xs data-[state=active]:bg-stone-900 data-[state=active]:text-white sm:px-8 sm:text-sm">
               Pending ({pendingListings.length})
             </TabsTrigger>
-            <TabsTrigger value="approved" className="rounded-lg px-8 data-[state=active]:bg-stone-900 data-[state=active]:text-white">
+            <TabsTrigger value="approved" className="flex-1 rounded-lg px-4 py-2 text-xs data-[state=active]:bg-stone-900 data-[state=active]:text-white sm:px-8 sm:text-sm">
               Approved ({approvedListings.length})
             </TabsTrigger>
-            <TabsTrigger value="all" className="rounded-lg px-8 data-[state=active]:bg-stone-900 data-[state=active]:text-white">
-              All Listings
+            <TabsTrigger value="all" className="flex-1 rounded-lg px-4 py-2 text-xs data-[state=active]:bg-stone-900 data-[state=active]:text-white sm:px-8 sm:text-sm">
+              All
             </TabsTrigger>
           </TabsList>
 
           <div className="grid gap-8 lg:grid-cols-3">
-            <div className="lg:col-span-2 space-y-6">
-              <TabsContent value="pending" className="m-0 space-y-6">
+            <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+              <TabsContent value="pending" className="m-0 space-y-4 sm:space-y-6">
                 {pendingListings.map(listing => (
                   <ListingCard 
                     key={listing.id} 
@@ -145,7 +145,7 @@ export function AdminDashboard() {
                 {pendingListings.length === 0 && <EmptyState message="No pending listings to review." />}
               </TabsContent>
 
-              <TabsContent value="approved" className="m-0 space-y-6">
+              <TabsContent value="approved" className="m-0 space-y-4 sm:space-y-6">
                 {approvedListings.map(listing => (
                   <ListingCard 
                     key={listing.id} 
@@ -159,7 +159,7 @@ export function AdminDashboard() {
                 {approvedListings.length === 0 && <EmptyState message="No approved listings yet." />}
               </TabsContent>
 
-              <TabsContent value="all" className="m-0 space-y-6">
+              <TabsContent value="all" className="m-0 space-y-4 sm:space-y-6">
                 {listings.map(listing => (
                   <ListingCard 
                     key={listing.id} 
@@ -175,48 +175,48 @@ export function AdminDashboard() {
             </div>
 
             <div className="lg:col-span-1">
-              <div className="sticky top-32">
-                <Card className="border-none shadow-xl bg-white rounded-3xl overflow-hidden">
-                  <CardHeader className="bg-stone-900 text-white p-6">
-                    <CardTitle className="text-lg font-serif font-light flex items-center gap-2">
+              <div className="sticky top-24 sm:top-32">
+                <Card className="border-none shadow-xl bg-white rounded-2xl overflow-hidden sm:rounded-3xl">
+                  <CardHeader className="bg-stone-900 text-white p-4 sm:p-6">
+                    <CardTitle className="text-base font-serif font-light flex items-center gap-2 sm:text-lg">
                       <User className="h-5 w-5" />
                       Contact Details
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-8">
+                  <CardContent className="p-6 sm:p-8">
                     {loadingDetails ? (
                       <div className="flex justify-center py-10">
                         <div className="h-6 w-6 animate-spin rounded-full border-2 border-stone-900 border-t-transparent" />
                       </div>
                     ) : privateDetails ? (
-                      <div className="space-y-6">
+                      <div className="space-y-5 sm:space-y-6">
                         <div className="space-y-1">
                           <label className="text-[10px] uppercase tracking-widest text-stone-400">Full Name</label>
-                          <div className="flex items-center gap-3 text-stone-900 font-medium">
+                          <div className="flex items-center gap-3 text-stone-900 font-medium text-sm sm:text-base">
                             <User className="h-4 w-4 text-stone-400" />
                             {privateDetails.contactName}
                           </div>
                         </div>
                         <div className="space-y-1">
                           <label className="text-[10px] uppercase tracking-widest text-stone-400">Phone Number</label>
-                          <div className="flex items-center gap-3 text-stone-900 font-medium">
+                          <div className="flex items-center gap-3 text-stone-900 font-medium text-sm sm:text-base">
                             <Phone className="h-4 w-4 text-stone-400" />
                             <a href={`tel:${privateDetails.contactPhone}`} className="hover:underline">{privateDetails.contactPhone}</a>
                           </div>
                         </div>
                         <div className="space-y-1">
                           <label className="text-[10px] uppercase tracking-widest text-stone-400">Email Address</label>
-                          <div className="flex items-center gap-3 text-stone-900 font-medium">
+                          <div className="flex items-center gap-3 text-stone-900 font-medium text-sm sm:text-base">
                             <Mail className="h-4 w-4 text-stone-400" />
-                            <a href={`mailto:${privateDetails.contactEmail}`} className="hover:underline">{privateDetails.contactEmail}</a>
+                            <a href={`mailto:${privateDetails.contactEmail}`} className="hover:underline truncate">{privateDetails.contactEmail}</a>
                           </div>
                         </div>
                         <div className="pt-6 border-t border-stone-100">
-                          <Button className="w-full bg-stone-900 rounded-xl">Share with Client</Button>
+                          <Button className="w-full bg-stone-900 rounded-xl h-11 sm:h-12">Share with Client</Button>
                         </div>
                       </div>
                     ) : (
-                      <div className="text-center py-10 text-stone-400 italic font-light">
+                      <div className="text-center py-10 text-stone-400 italic font-light text-sm">
                         Select a listing to view private contact information.
                       </div>
                     )}
@@ -234,9 +234,9 @@ export function AdminDashboard() {
 function ListingCard({ listing, onApprove, onReject, onDelete, onViewDetails, isSelected }: any) {
   return (
     <Card className={`border-none shadow-sm transition-all duration-300 ${isSelected ? 'ring-2 ring-stone-900' : 'hover:shadow-md'}`}>
-      <CardContent className="p-6">
-        <div className="flex flex-col sm:flex-row gap-6">
-          <div className="w-full sm:w-48 h-32 rounded-xl overflow-hidden bg-stone-100 shrink-0">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+          <div className="w-full sm:w-40 h-32 rounded-xl overflow-hidden bg-stone-100 shrink-0">
             <img 
               src={listing.imageUrl || `https://picsum.photos/seed/${listing.id}/400/300`} 
               className="w-full h-full object-cover"
@@ -245,35 +245,35 @@ function ListingCard({ listing, onApprove, onReject, onDelete, onViewDetails, is
           </div>
           <div className="flex-1 space-y-2">
             <div className="flex items-center justify-between">
-              <Badge variant="outline" className="uppercase text-[9px] tracking-widest border-stone-200">
+              <Badge variant="outline" className="uppercase text-[8px] tracking-widest border-stone-200 px-2 py-0">
                 {listing.status}
               </Badge>
-              <span className="text-[10px] text-stone-400 uppercase tracking-widest">
+              <span className="text-[9px] text-stone-400 uppercase tracking-widest">
                 {listing.propertyType} • {listing.type}
               </span>
             </div>
-            <h3 className="text-xl font-serif font-medium">{listing.title}</h3>
-            <p className="text-sm text-stone-500 line-clamp-1 font-light">{listing.description}</p>
-            <div className="flex items-center gap-4 pt-2">
-              <span className="text-lg font-medium text-stone-900">{listing.price}</span>
-              <span className="text-sm text-stone-400 font-light">{listing.location}</span>
+            <h3 className="text-lg font-serif font-medium sm:text-xl">{listing.title}</h3>
+            <p className="text-xs text-stone-500 line-clamp-1 font-light sm:text-sm">{listing.description}</p>
+            <div className="flex items-center gap-3 pt-1 sm:gap-4 sm:pt-2">
+              <span className="text-base font-medium text-stone-900 sm:text-lg">{listing.price}</span>
+              <span className="text-xs text-stone-400 font-light sm:text-sm">{listing.location}</span>
             </div>
           </div>
-          <div className="flex sm:flex-col gap-2 justify-end">
-            <Button size="icon" variant="outline" className="rounded-full border-stone-200" onClick={onViewDetails}>
+          <div className="flex flex-row sm:flex-col gap-2 justify-end pt-2 sm:pt-0">
+            <Button size="icon" variant="outline" className="h-9 w-9 rounded-full border-stone-200 sm:h-10 sm:w-10" onClick={onViewDetails}>
               <Eye className="h-4 w-4" />
             </Button>
             {onApprove && (
-              <Button size="icon" variant="outline" className="rounded-full border-stone-200 text-green-600 hover:bg-green-50" onClick={onApprove}>
+              <Button size="icon" variant="outline" className="h-9 w-9 rounded-full border-stone-200 text-green-600 hover:bg-green-50 sm:h-10 sm:w-10" onClick={onApprove}>
                 <Check className="h-4 w-4" />
               </Button>
             )}
             {onReject && (
-              <Button size="icon" variant="outline" className="rounded-full border-stone-200 text-orange-600 hover:bg-orange-50" onClick={onReject}>
+              <Button size="icon" variant="outline" className="h-9 w-9 rounded-full border-stone-200 text-orange-600 hover:bg-orange-50 sm:h-10 sm:w-10" onClick={onReject}>
                 <X className="h-4 w-4" />
               </Button>
             )}
-            <Button size="icon" variant="outline" className="rounded-full border-stone-200 text-red-600 hover:bg-red-50" onClick={onDelete}>
+            <Button size="icon" variant="outline" className="h-9 w-9 rounded-full border-stone-200 text-red-600 hover:bg-red-50 sm:h-10 sm:w-10" onClick={onDelete}>
               <Trash2 className="h-4 w-4" />
             </Button>
           </div>
@@ -282,7 +282,6 @@ function ListingCard({ listing, onApprove, onReject, onDelete, onViewDetails, is
     </Card>
   );
 }
-
 function EmptyState({ message }: { message: string }) {
   return (
     <div className="text-center py-20 bg-white rounded-3xl border border-stone-200 border-dashed">

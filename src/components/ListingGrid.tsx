@@ -56,23 +56,23 @@ export function ListingGrid() {
   }
 
   return (
-    <section id="properties" className="py-24 bg-stone-50">
+    <section id="properties" className="py-16 bg-stone-50 sm:py-24">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-16">
+        <div className="mb-12 sm:mb-16">
           <h2 className="text-3xl font-serif font-light tracking-tight text-stone-900 sm:text-5xl">
             Available <span className="italic">Opportunities</span>
           </h2>
-          <p className="mt-4 text-lg text-stone-600 font-light">
+          <p className="mt-4 text-base text-stone-600 font-light sm:text-lg">
             Browse verified property requirements and listings from our community.
           </p>
         </div>
 
         {listings.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl border border-stone-200">
-            <p className="text-stone-500 italic">No listings available at the moment. Be the first to post!</p>
+          <div className="text-center py-16 bg-white rounded-2xl border border-stone-200 sm:py-20 sm:rounded-3xl">
+            <p className="text-stone-500 italic text-sm sm:text-base">No listings available at the moment. Be the first to post!</p>
           </div>
         ) : (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
             <AnimatePresence mode="popLayout">
               {listings.map((listing, index) => (
                 <motion.div
