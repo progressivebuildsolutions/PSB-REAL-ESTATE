@@ -16,6 +16,7 @@ export function PostRequirement() {
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [listingType, setListingType] = useState('buy');
   const { user, signInWithGoogle } = useAuth();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,16 +50,25 @@ export function PostRequirement() {
     try {
       let imageUrl = '';
       if (imageFile) {
-        const storageRef = ref(storage, `listings/${listingId}/${imageFile.name}`);
-        const uploadResult = await uploadBytes(storageRef, imageFile);
-        imageUrl = await getDownloadURL(uploadResult.ref);
+        console.log('Starting image upload...', imageFile.name);
+        toast.info('Uploading property image...');
+        try {
+          const storageRef = ref(storage, `listings/${listingId}/${Date.now()}_${imageFile.name}`);
+          const uploadResult = await uploadBytes(storageRef, imageFile);
+          imageUrl = await getDownloadURL(uploadResult.ref);
+          console.log('Image upload successful:', imageUrl);
+        } catch (uploadError: any) {
+          console.error('Image upload failed:', uploadError);
+          toast.error(`Image upload failed: ${uploadError.message || 'Unknown error'}. Posting without image.`);
+          // Continue posting without image if upload fails
+        }
       }
 
       // 1. Create Public Listing (No contact info)
       await setDoc(doc(db, 'listings', listingId), {
         title: `${formData.get('propertyType')} in ${formData.get('location')}`,
         description: formData.get('message') || 'No additional details provided.',
-        type: formData.get('listingType'),
+        type: listingType,
         propertyType: formData.get('propertyType'),
         price: formData.get('budget'),
         location: formData.get('location'),
@@ -81,6 +91,7 @@ export function PostRequirement() {
       (e.target as HTMLFormElement).reset();
       setImageFile(null);
       setImagePreview(null);
+      setListingType('buy');
     } catch (error) {
       console.error('Error posting requirement:', error);
       toast.error('Failed to post requirement. Please try again.');
@@ -142,7 +153,7 @@ export function PostRequirement() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="req-listing-type">Listing Type</Label>
-                  <Select name="listingType" required defaultValue="buy">
+                  <Select name="listingType" required value={listingType} onValueChange={setListingType}>
                     <SelectTrigger className="rounded-xl">
                       <SelectValue placeholder="Select Type" />
                     </SelectTrigger>
@@ -176,7 +187,9 @@ export function PostRequirement() {
                   <Input id="req-budget" name="budget" placeholder="e.g. 50L - 1Cr" required />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="req-location">Preferred Location</Label>
+                  <Label htmlFor="req-location">
+                    {listingType === 'sell' ? 'Location' : 'Preferred Location'}
+                  </Label>
                   <Input id="req-location" name="location" placeholder="e.g. Sector 41, Chandigarh" required />
                 </div>
               </div>
