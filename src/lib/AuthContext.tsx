@@ -78,7 +78,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           } else {
             const data = userSnap.data();
             console.log('User document found, role:', data?.role);
-            setIsAdmin(data?.role === 'admin');
+            // Force admin if email matches, regardless of DB value
+            const isUserAdmin = data?.role === 'admin' || user.email === 'progressivebuildsolutions@gmail.com';
+            setIsAdmin(isUserAdmin);
           }
         } else {
           setIsAdmin(false);

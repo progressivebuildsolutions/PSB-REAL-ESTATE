@@ -82,6 +82,14 @@ export function Navbar() {
                   <User className="h-4 w-4" />
                   <span className="text-xs font-medium truncate">{user.displayName}</span>
                 </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem asChild className="rounded-lg gap-2 cursor-pointer">
+                    <Link to="/admin">
+                      <ShieldCheck className="h-4 w-4 text-stone-900" />
+                      <span className="font-medium">Admin Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={logout} className="rounded-lg gap-2 text-red-600 focus:text-red-600 cursor-pointer">
                   <LogOut className="h-4 w-4" />
                   <span>Logout</span>
@@ -99,7 +107,17 @@ export function Navbar() {
             </Button>
           )}
 
-          <Button variant="default" className="rounded-full bg-stone-900 px-6 hover:bg-stone-800 text-white">
+          <Button 
+            variant="default" 
+            className="rounded-full bg-stone-900 px-6 hover:bg-stone-800 text-white"
+            onClick={() => {
+              if (isHomePage) {
+                document.getElementById('post-requirement')?.scrollIntoView({ behavior: 'smooth' });
+              } else {
+                window.location.href = '/#post-requirement';
+              }
+            }}
+          >
             Post Property
           </Button>
         </div>
@@ -123,6 +141,16 @@ export function Navbar() {
             className="border-t bg-white md:hidden overflow-hidden"
           >
             <div className="flex flex-col gap-4 p-6">
+              {isAdmin && (
+                <Link 
+                  to="/admin"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-lg font-medium text-stone-900 flex items-center gap-2"
+                >
+                  <ShieldCheck className="h-5 w-5 text-stone-900" />
+                  Admin Dashboard
+                </Link>
+              )}
               {navLinks.map((link) => (
                 <a 
                   key={link.name} 
@@ -154,7 +182,17 @@ export function Navbar() {
                 </Button>
               )}
 
-              <Button className="w-full rounded-xl bg-stone-900 py-6">
+              <Button 
+                className="w-full rounded-xl bg-stone-900 py-6"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (isHomePage) {
+                    document.getElementById('post-requirement')?.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    window.location.href = '/#post-requirement';
+                  }
+                }}
+              >
                 Post Property
               </Button>
             </div>
